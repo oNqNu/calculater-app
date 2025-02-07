@@ -12,6 +12,26 @@ function App() {
     document.body.setAttribute('data-theme', theme)
   }, [theme])
 
+  const formatNumber = (num: string): string => {
+    const number = parseFloat(num)
+    if (Number.isInteger(number)) {
+      return number.toString()
+    }
+    
+    // 小数点以下の桁数を取得
+    const decimalPlaces = (num.split('.')[1] || '').length
+    
+    // 結果が整数に近い場合(誤差が非常に小さい場合)は整数として扱う
+    if (Math.abs(Math.round(number) - number) < Number.EPSILON) {
+      return Math.round(number).toString()
+    }
+    
+    // 小数点以下の桁数に基づいて丸める
+    // ただし、明らかな計算誤差(.99999...や.00000...)を補正
+    const rounded = parseFloat(number.toFixed(Math.min(decimalPlaces, 10)))
+    return rounded.toString()
+  }
+
   const getEasterEgg = (number: string): string => {
     const numericValue = parseFloat(number)
     switch (number) {
@@ -34,7 +54,7 @@ function App() {
         if (numericValue === Math.PI) return 'π'
         if (numericValue === Math.E) return 'e'
         if (numericValue === Math.SQRT2) return '√2'
-        return number
+        return formatNumber(number)
     }
   }
 
