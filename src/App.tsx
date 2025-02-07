@@ -3,6 +3,7 @@ import './App.css'
 
 function App() {
   const [currentNumber, setCurrentNumber] = useState<string>('0')
+  const [displayNumber, setDisplayNumber] = useState<string>('0')
   const [equation, setEquation] = useState<string>('')
   const [shouldResetCurrent, setShouldResetCurrent] = useState<boolean>(false)
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
@@ -12,6 +13,7 @@ function App() {
   }, [theme])
 
   const getEasterEgg = (number: string): string => {
+    const numericValue = parseFloat(number)
     switch (number) {
       case '1337':
         return 'L33T!'
@@ -20,19 +22,45 @@ function App() {
       case '777':
         return '大当たり!🎰'
       case '3.14':
+      case '3.141592653589793':
         return 'π'
       case '2.718':
+      case '2.718281828459045':
         return 'e'
       case '1.414':
+      case '1.4142135623730951':
         return '√2'
       default:
+        if (numericValue === Math.PI) return 'π'
+        if (numericValue === Math.E) return 'e'
+        if (numericValue === Math.SQRT2) return '√2'
         return number
+    }
+  }
+
+  const getNumericValue = (display: string): string => {
+    switch (display) {
+      case 'L33T!':
+        return '1337'
+      case '生命、宇宙、そして万物についての究極の疑問の答え':
+        return '42'
+      case '大当たり!🎰':
+        return '777'
+      case 'π':
+        return Math.PI.toString()
+      case 'e':
+        return Math.E.toString()
+      case '√2':
+        return Math.SQRT2.toString()
+      default:
+        return display
     }
   }
 
   const handleNumber = (number: string) => {
     if (shouldResetCurrent) {
       setCurrentNumber(number)
+      setDisplayNumber(number)
       setShouldResetCurrent(false)
     } else {
       if (number === '.' && currentNumber.includes('.')) {
@@ -40,9 +68,11 @@ function App() {
       }
       if (number === '.' && currentNumber === '0') {
         setCurrentNumber('0.')
+        setDisplayNumber('0.')
       } else {
         const newNumber = currentNumber === '0' && number !== '.' ? number : currentNumber + number
-        setCurrentNumber(getEasterEgg(newNumber))
+        setCurrentNumber(newNumber)
+        setDisplayNumber(getEasterEgg(newNumber))
       }
     }
   }
@@ -51,7 +81,7 @@ function App() {
     if (equation && !shouldResetCurrent) {
       calculate()
     } else {
-      setEquation(currentNumber + ' ' + operator)
+      setEquation(getNumericValue(displayNumber) + ' ' + operator)
       setShouldResetCurrent(true)
     }
   }
@@ -60,7 +90,7 @@ function App() {
     const parts = equation.split(' ')
     const num1 = parseFloat(parts[0])
     const operator = parts[1]
-    const num2 = parseFloat(currentNumber)
+    const num2 = parseFloat(getNumericValue(displayNumber))
     let result = 0
 
     switch (operator) {
@@ -78,7 +108,9 @@ function App() {
         break
     }
 
-    setCurrentNumber(getEasterEgg(result.toString()))
+    const resultStr = result.toString()
+    setCurrentNumber(resultStr)
+    setDisplayNumber(getEasterEgg(resultStr))
     setEquation('')
     setShouldResetCurrent(true)
   }
@@ -91,6 +123,7 @@ function App() {
 
   const handleClear = () => {
     setCurrentNumber('0')
+    setDisplayNumber('0')
     setEquation('')
     setShouldResetCurrent(false)
   }
@@ -106,7 +139,7 @@ function App() {
       </button>
       <div className="display">
         <div className="equation">{equation}</div>
-        <div className="current" data-testid="current-value">{currentNumber}</div>
+        <div className="current" data-testid="current-value">{displayNumber}</div>
       </div>
       <div className="buttons">
         <button className="clear" onClick={handleClear}>C</button>
