@@ -14,7 +14,7 @@
   
   /* ボタンカラー */
   --color-button-background: #22252D;
-  --color-button-hover: #2A2D37;
+  --color-button-hover: #363B48;  /* より明るい色に変更 */
   
   /* エフェクト */
   --shadow-calculator: 0 8px 25px rgba(0, 0, 0, 0.5);
