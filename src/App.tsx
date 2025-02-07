@@ -1,14 +1,14 @@
-import { useState } from 'react'
 import { useSystemTheme } from './hooks/useSystemTheme'
+import { useLocalStorage } from './hooks/useLocalStorage'
 import './App.css'
 
 type Theme = 'light' | 'dark'
 
 function App() {
-  const [currentNumber, setCurrentNumber] = useState<string>('0')
-  const [displayNumber, setDisplayNumber] = useState<string>('0')
-  const [equation, setEquation] = useState<string>('')
-  const [shouldResetCurrent, setShouldResetCurrent] = useState<boolean>(false)
+  const [currentNumber, setCurrentNumber] = useLocalStorage<string>('calc_current', '0')
+  const [displayNumber, setDisplayNumber] = useLocalStorage<string>('calc_display', '0')
+  const [equation, setEquation] = useLocalStorage<string>('calc_equation', '')
+  const [shouldResetCurrent, setShouldResetCurrent] = useLocalStorage<boolean>('calc_should_reset', false)
   const [theme, setTheme] = useSystemTheme()
 
   const formatNumber = (num: string): string => {
