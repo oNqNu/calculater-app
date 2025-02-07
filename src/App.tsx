@@ -79,7 +79,7 @@ function App() {
       </button>
       <div className="display">
         <div className="equation">{equation}</div>
-        <div className="current">{currentNumber}</div>
+        <div className="current" data-testid="current-value">{currentNumber}</div>
       </div>
       <div className="buttons">
         <button className="clear" onClick={handleClear}>C</button>
