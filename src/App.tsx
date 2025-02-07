@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import './App.css'
 
-function App() {
-  const [currentNumber, setCurrentNumber] = useState('0')
-  const [previousNumber, setPreviousNumber] = useState(null)
-  const [operator, setOperator] = useState(null)
-  const [shouldResetScreen, setShouldResetScreen] = useState(false)
+type Operator = '+' | '-' | '*' | '/' | null
 
-  const handleNumber = (number) => {
+function App() {
+  const [currentNumber, setCurrentNumber] = useState<string>('0')
+  const [previousNumber, setPreviousNumber] = useState<string | null>(null)
+  const [operator, setOperator] = useState<Operator>(null)
+  const [shouldResetScreen, setShouldResetScreen] = useState<boolean>(false)
+
+  const handleNumber = (number: string): void => {
     if (shouldResetScreen) {
       setCurrentNumber(number)
       setShouldResetScreen(false)
@@ -16,7 +18,7 @@ function App() {
     }
   }
 
-  const handleOperator = (op) => {
+  const handleOperator = (op: Exclude<Operator, null>): void => {
     if (operator !== null && previousNumber !== null) {
       // 連続した演算の場合、前回の計算を実行
       const result = calculate()
@@ -30,12 +32,12 @@ function App() {
     setShouldResetScreen(true)
   }
 
-  const calculate = () => {
+  const calculate = (): string => {
     if (previousNumber === null || operator === null) return currentNumber
     
     const prev = parseFloat(previousNumber)
     const current = parseFloat(currentNumber)
-    let result
+    let result: number
 
     switch (operator) {
       case '+':
@@ -57,7 +59,7 @@ function App() {
     return Number.isInteger(result) ? String(result) : result.toFixed(8).replace(/\.?0+$/, '')
   }
 
-  const handleEqual = () => {
+  const handleEqual = (): void => {
     if (previousNumber === null || operator === null) return
     
     const result = calculate()
@@ -67,14 +69,14 @@ function App() {
     setShouldResetScreen(true)
   }
 
-  const handleClear = () => {
+  const handleClear = (): void => {
     setCurrentNumber('0')
     setPreviousNumber(null)
     setOperator(null)
     setShouldResetScreen(false)
   }
 
-  const getDisplayFormula = () => {
+  const getDisplayFormula = (): string => {
     if (previousNumber === null) return ''
     const displayOperator = operator === '*' ? '×' : operator === '/' ? '÷' : operator
     return `${previousNumber} ${displayOperator}`
