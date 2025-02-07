@@ -57,9 +57,15 @@ jobs:
             const testResults = JSON.parse(fs.readFileSync('test-results/results.json', 'utf8'));
             
             const formatDuration = (ms) => {
+              if (!ms || isNaN(ms)) return '0ms';
               if (ms < 1000) return `${ms}ms`;
               return `${(ms/1000).toFixed(2)}s`;
             };
+
+            // 全テストスイートの実行時間を合計
+            const totalDuration = testResults.testResults.reduce((total, suite) => {
+              return total + (suite.perfStats?.runtime || 0);
+            }, 0);
             
             const summary = `
             ## テスト結果
@@ -68,7 +74,7 @@ jobs:
             - 総テスト数: ${testResults.numTotalTests}
             - 成功: ${testResults.numPassedTests} ✅
             - 失敗: ${testResults.numFailedTests} ${testResults.numFailedTests > 0 ? '❌' : ''}
-            - 実行時間: ${formatDuration(testResults.startTime - testResults.endTime)}
+            - 実行時間: ${formatDuration(totalDuration)}
             
             ${testResults.numFailedTests > 0 ? `
             ### 失敗したテスト
