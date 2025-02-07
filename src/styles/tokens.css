@@ -1,21 +1,35 @@
 :root {
-  /* ベースカラー */
+  /* ライトモード(デフォルト) */
+  --color-background: #F0F0F0;
+  --color-surface: #FFFFFF;
+  --color-surface-dark: #F5F5F5;
+  
+  --color-primary: #FF9F0A;
+  --color-primary-hover: #FFB23F;
+  
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+  
+  --color-button-background: #F5F5F5;
+  --color-button-hover: #E0E0E0;
+  
+  --shadow-calculator: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* ダークモード */
+[data-theme="dark"] {
   --color-background: #121212;
   --color-surface: #2A2D37;
   --color-surface-dark: #22252D;
   
-  /* アクセントカラー */
   --color-primary: #FF9F0A;
   --color-primary-hover: #FFB23F;
   
-  /* テキストカラー */
   --color-text-primary: #FFFFFF;
   --color-text-secondary: #888888;
   
-  /* ボタンカラー */
   --color-button-background: #22252D;
-  --color-button-hover: #363B48;  /* より明るい色に変更 */
+  --color-button-hover: #363B48;
   
-  /* エフェクト */
   --shadow-calculator: 0 8px 25px rgba(0, 0, 0, 0.5);
 }

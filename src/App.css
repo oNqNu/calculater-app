@@ -7,6 +7,7 @@ body {
   justify-content: center;
   align-items: center;
   background: var(--color-background);
+  transition: background-color 0.3s ease;
 }
 
 .calculator {
@@ -15,6 +16,29 @@ body {
   border-radius: 20px;
   box-shadow: var(--shadow-calculator);
   padding: 20px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: -50px;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  font-size: 20px;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  box-shadow: var(--shadow-calculator);
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
 }
 
 .display {
@@ -23,6 +47,7 @@ body {
   padding: 20px;
   margin-bottom: 20px;
   text-align: right;
+  transition: background-color 0.3s ease;
 }
 
 .equation {
@@ -30,6 +55,7 @@ body {
   color: var(--color-text-secondary);
   font-size: 14px;
   margin-bottom: 5px;
+  transition: color 0.3s ease;
 }
 
 .current {
@@ -37,6 +63,7 @@ body {
   font-weight: bold;
   color: var(--color-text-primary);
   word-wrap: break-word;
+  transition: color 0.3s ease;
 }
 
 .buttons {
@@ -53,7 +80,7 @@ button {
   background: var(--color-button-background);
   color: var(--color-text-primary);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
