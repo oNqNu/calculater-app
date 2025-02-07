@@ -90,7 +90,11 @@ function App() {
       </div>
       <div className="buttons">
         <button onClick={handleClear} className="clear">C</button>
-        <button className="operator-top">&plusmn;</button>
+        <button onClick={() => {
+          setCurrentNumber(current =>
+            current.startsWith('-') ? current.slice(1) : '-' + current
+          )
+        }} className="operator-top">&plusmn;</button>
         <button className="operator-top">%</button>
         <button onClick={() => handleOperator('/')} className="operator">÷</button>
 
