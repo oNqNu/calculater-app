@@ -1,22 +1,24 @@
+@import './styles/tokens.css';
+
 body {
   margin: 0;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #121212;
+  background: var(--color-background);
 }
 
 .calculator {
   width: 320px;
-  background: #2A2D37;
+  background: var(--color-surface);
   border-radius: 20px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-calculator);
   padding: 20px;
 }
 
 .display {
-  background: #22252D;
+  background: var(--color-surface-dark);
   border-radius: 10px;
   padding: 20px;
   margin-bottom: 20px;
@@ -25,7 +27,7 @@ body {
 
 .equation {
   min-height: 20px;
-  color: #888;
+  color: var(--color-text-secondary);
   font-size: 14px;
   margin-bottom: 5px;
 }
@@ -33,7 +35,7 @@ body {
 .current {
   font-size: 40px;
   font-weight: bold;
-  color: #fff;
+  color: var(--color-text-primary);
   word-wrap: break-word;
 }
 
@@ -48,8 +50,8 @@ button {
   font-size: 24px;
   border: none;
   border-radius: 10px;
-  background: #22252D;
-  color: #fff;
+  background: var(--color-button-background);
+  color: var(--color-text-primary);
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
@@ -58,7 +60,7 @@ button {
 }
 
 button:hover {
-  background: #2A2D37;
+  background: var(--color-button-hover);
   transform: translateY(-2px);
 }
 
@@ -67,40 +69,40 @@ button:active {
 }
 
 .operator {
-  background: #FF9F0A;
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .operator:hover {
-  background: #FFB23F;
+  background: var(--color-primary-hover);
 }
 
 .operator-top {
-  background: #22252D;
-  color: #FF9F0A;
+  background: var(--color-button-background);
+  color: var(--color-primary);
 }
 
 .operator-top:hover {
-  background: #2A2D37;
+  background: var(--color-button-hover);
 }
 
 .clear {
-  background: #22252D;
-  color: #FF9F0A;
+  background: var(--color-button-background);
+  color: var(--color-primary);
 }
 
 .clear:hover {
-  background: #2A2D37;
+  background: var(--color-button-hover);
 }
 
 .equal {
-  background: #FF9F0A;
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-text-primary);
   grid-column: 3 / span 2;
 }
 
 .equal:hover {
-  background: #FFB23F;
+  background: var(--color-primary-hover);
 }
 
 .zero {

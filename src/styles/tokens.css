@@ -1,0 +1,21 @@
+:root {
+  /* ベースカラー */
+  --color-background: #121212;
+  --color-surface: #2A2D37;
+  --color-surface-dark: #22252D;
+  
+  /* アクセントカラー */
+  --color-primary: #FF9F0A;
+  --color-primary-hover: #FFB23F;
+  
+  /* テキストカラー */
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #888888;
+  
+  /* ボタンカラー */
+  --color-button-background: #22252D;
+  --color-button-hover: #2A2D37;
+  
+  /* エフェクト */
+  --shadow-calculator: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
