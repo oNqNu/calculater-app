@@ -4,23 +4,30 @@ import './App.css'
 type Operator = '+' | '-' | '*' | '/' | null
 
 function App() {
-  const [currentNumber, setCurrentNumber] = useState<string>('0')
-  const [previousNumber, setPreviousNumber] = useState<string | null>(null)
+  const [currentNumber, setCurrentNumber] = useState<number>(0)
+  const [previousNumber, setPreviousNumber] = useState<number | null>(null)
   const [operator, setOperator] = useState<Operator>(null)
+  const [inputBuffer, setInputBuffer] = useState<string>('0')
   const [shouldResetScreen, setShouldResetScreen] = useState<boolean>(false)
 
-  const handleNumber = (number: string): void => {
+  const formatNumber = (num: number): string => {
+    return Number.isInteger(num) ? num.toString() : num.toFixed(8).replace(/\.?0+$/, '')
+  }
+
+  const handleNumber = (digit: string): void => {
     if (shouldResetScreen) {
-      setCurrentNumber(number)
+      setInputBuffer(digit)
+      setCurrentNumber(parseFloat(digit))
       setShouldResetScreen(false)
     } else {
-      setCurrentNumber(currentNumber === '0' ? number : currentNumber + number)
+      const newBuffer = inputBuffer === '0' ? digit : inputBuffer + digit
+      setInputBuffer(newBuffer)
+      setCurrentNumber(parseFloat(newBuffer))
     }
   }
 
   const handleOperator = (op: Exclude<Operator, null>): void => {
     if (operator !== null && previousNumber !== null) {
-      // 連続した演算の場合、前回の計算を実行
       const result = calculate()
       setPreviousNumber(result)
       setCurrentNumber(result)
@@ -32,31 +39,21 @@ function App() {
     setShouldResetScreen(true)
   }
 
-  const calculate = (): string => {
+  const calculate = (): number => {
     if (previousNumber === null || operator === null) return currentNumber
     
-    const prev = parseFloat(previousNumber)
-    const current = parseFloat(currentNumber)
-    let result: number
-
     switch (operator) {
       case '+':
-        result = prev + current
-        break
+        return previousNumber + currentNumber
       case '-':
-        result = prev - current
-        break
+        return previousNumber - currentNumber
       case '*':
-        result = prev * current
-        break
+        return previousNumber * currentNumber
       case '/':
-        result = prev / current
-        break
+        return previousNumber / currentNumber
       default:
         return currentNumber
     }
-
-    return Number.isInteger(result) ? String(result) : result.toFixed(8).replace(/\.?0+$/, '')
   }
 
   const handleEqual = (): void => {
@@ -64,13 +61,15 @@ function App() {
     
     const result = calculate()
     setCurrentNumber(result)
+    setInputBuffer(formatNumber(result))
     setPreviousNumber(null)
     setOperator(null)
     setShouldResetScreen(true)
   }
 
   const handleClear = (): void => {
-    setCurrentNumber('0')
+    setCurrentNumber(0)
+    setInputBuffer('0')
     setPreviousNumber(null)
     setOperator(null)
     setShouldResetScreen(false)
@@ -79,19 +78,20 @@ function App() {
   const getDisplayFormula = (): string => {
     if (previousNumber === null) return ''
     const displayOperator = operator === '*' ? '×' : operator === '/' ? '÷' : operator
-    return `${previousNumber} ${displayOperator}`
+    return `${formatNumber(previousNumber)} ${displayOperator}`
   }
 
   return (
     <div className="calculator">
       <div className="display">
         <div className="equation">{getDisplayFormula()}</div>
-        <div className="current">{currentNumber}</div>
+        <div className="current">{inputBuffer}</div>
       </div>
       <div className="buttons">
         <button onClick={handleClear} className="clear">C</button>
         <button onClick={() => {
-          setCurrentNumber(current =>
+          setCurrentNumber(current => -current)
+          setInputBuffer(current =>
             current.startsWith('-') ? current.slice(1) : '-' + current
           )
         }} className="operator-top">&plusmn;</button>
