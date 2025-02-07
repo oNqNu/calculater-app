@@ -1,6 +1,14 @@
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #17181A;
+}
+
 .calculator {
   width: 320px;
-  margin: 100px auto;
   background: #22252D;
   border-radius: 20px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
