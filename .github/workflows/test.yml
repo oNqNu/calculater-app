@@ -43,7 +43,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: test-results
-        path: test-results/
+        path: |
+          test-results/
+          coverage/
         retention-days: 7
 
     - name: Comment PR with test results
@@ -57,8 +59,9 @@ jobs:
             const testResults = JSON.parse(fs.readFileSync('test-results/results.json', 'utf8'));
             
             const formatDuration = (ms) => {
-              if (!ms || isNaN(ms)) return '0ms';
-              if (ms < 1000) return `${ms}ms`;
+              if (!ms || isNaN(ms)) return '0.00ms';
+              if (ms < 1) return `${ms.toFixed(2)}ms`;
+              if (ms < 1000) return `${ms.toFixed(2)}ms`;
               return `${(ms/1000).toFixed(2)}s`;
             };
 
@@ -66,6 +69,21 @@ jobs:
             const totalDuration = testResults.testResults.reduce((total, suite) => {
               return total + (suite.perfStats?.runtime || 0);
             }, 0);
+
+            // カバレッジ情報の取得
+            let coverageInfo = '';
+            try {
+              const coverage = JSON.parse(fs.readFileSync('coverage/coverage-final.json', 'utf8'));
+              const totalCoverage = Object.values(coverage).reduce((acc, file) => {
+                const statements = file.statementMap ? Object.keys(file.statementMap).length : 0;
+                const coveredStatements = file.s ? Object.values(file.s).filter(v => v > 0).length : 0;
+                return acc + (coveredStatements / statements * 100 || 0);
+              }, 0) / Object.keys(coverage).length;
+
+              coverageInfo = `- カバレッジ: ${totalCoverage.toFixed(2)}%\n`;
+            } catch (e) {
+              console.error('Coverage info not available:', e);
+            }
             
             const summary = `
             ## テスト結果
@@ -75,6 +93,7 @@ jobs:
             - 成功: ${testResults.numPassedTests} ✅
             - 失敗: ${testResults.numFailedTests} ${testResults.numFailedTests > 0 ? '❌' : ''}
             - 実行時間: ${formatDuration(totalDuration)}
+            ${coverageInfo}
             
             ${testResults.numFailedTests > 0 ? `
             ### 失敗したテスト
