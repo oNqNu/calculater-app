@@ -8,9 +8,7 @@
 
 このアプリケーションはGitHub Pagesで公開されています。以下のURLでアクセスできます:
 
-```
-https://[あなたのGitHubユーザー名].github.io/calculater-app/
-```
+[https://onqnu.github.io/calculater-app/](https://onqnu.github.io/calculater-app/)
 
 mainブランチにプッシュされた変更は、自動的にGitHub Pagesにデプロイされます。
 
@@ -25,7 +23,7 @@ mainブランチにプッシュされた変更は、自動的にGitHub Pagesに�
 
 1. リポジトリのクローン
 ```bash
-git clone https://github.com/[あなたのGitHubユーザー名]/calculater-app.git
+git clone https://github.com/oNqNu/calculater-app.git
 cd calculater-app
 ```
 
@@ -129,4 +127,4 @@ npm run build
 1. mainブランチへの変更をプッシュ
 2. GitHub Actionsが自動的にビルドとテストを実行
 3. テストが成功した場合、ビルドされたファイルがGitHub Pagesにデプロイ
-4. デプロイ完了後、上記のURLでアプリケーションにアクセス可能
+4. デプロイ完了後、[https://onqnu.github.io/calculater-app/](https://onqnu.github.io/calculater-app/) でアプリケーションにアクセス可能
