@@ -11,12 +11,39 @@ function App() {
     document.body.setAttribute('data-theme', theme)
   }, [theme])
 
+  const getEasterEgg = (number: string): string => {
+    switch (number) {
+      case '1337':
+        return 'L33T!'
+      case '42':
+        return '生命、宇宙、そして万物についての究極の疑問の答え'
+      case '777':
+        return '大当たり!🎰'
+      case '3.14':
+        return 'π'
+      case '2.718':
+        return 'e'
+      case '1.414':
+        return '√2'
+      default:
+        return number
+    }
+  }
+
   const handleNumber = (number: string) => {
     if (shouldResetCurrent) {
       setCurrentNumber(number)
       setShouldResetCurrent(false)
     } else {
-      setCurrentNumber(currentNumber === '0' ? number : currentNumber + number)
+      if (number === '.' && currentNumber.includes('.')) {
+        return
+      }
+      if (number === '.' && currentNumber === '0') {
+        setCurrentNumber('0.')
+      } else {
+        const newNumber = currentNumber === '0' && number !== '.' ? number : currentNumber + number
+        setCurrentNumber(getEasterEgg(newNumber))
+      }
     }
   }
 
@@ -51,7 +78,7 @@ function App() {
         break
     }
 
-    setCurrentNumber(result.toString())
+    setCurrentNumber(getEasterEgg(result.toString()))
     setEquation('')
     setShouldResetCurrent(true)
   }
