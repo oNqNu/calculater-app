@@ -1,16 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { useSystemTheme } from './hooks/useSystemTheme'
 import './App.css'
+
+type Theme = 'light' | 'dark'
 
 function App() {
   const [currentNumber, setCurrentNumber] = useState<string>('0')
   const [displayNumber, setDisplayNumber] = useState<string>('0')
   const [equation, setEquation] = useState<string>('')
   const [shouldResetCurrent, setShouldResetCurrent] = useState<boolean>(false)
-  const [theme, setTheme] = useState<'light' | 'dark'>('light')
-
-  useEffect(() => {
-    document.body.setAttribute('data-theme', theme)
-  }, [theme])
+  const [theme, setTheme] = useSystemTheme()
 
   const formatNumber = (num: string): string => {
     const number = parseFloat(num)
@@ -18,16 +17,12 @@ function App() {
       return number.toString()
     }
     
-    // 小数点以下の桁数を取得
     const decimalPlaces = (num.split('.')[1] || '').length
     
-    // 結果が整数に近い場合(誤差が非常に小さい場合)は整数として扱う
     if (Math.abs(Math.round(number) - number) < Number.EPSILON) {
       return Math.round(number).toString()
     }
     
-    // 小数点以下の桁数に基づいて丸める
-    // ただし、明らかな計算誤差(.99999...や.00000...)を補正
     const rounded = parseFloat(number.toFixed(Math.min(decimalPlaces, 10)))
     return rounded.toString()
   }
@@ -149,12 +144,16 @@ function App() {
   }
 
   const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light')
+    setTheme((prevTheme: Theme) => prevTheme === 'light' ? 'dark' : 'light')
   }
 
   return (
     <div className="calculator">
-      <button className="theme-toggle" onClick={toggleTheme}>
+      <button 
+        className="theme-toggle" 
+        onClick={toggleTheme}
+        title={`現在の設定: ${theme === 'light' ? 'ライト' : 'ダーク'}モード (システム設定に追従)`}
+      >
         {theme === 'light' ? '🌙' : '☀️'}
       </button>
       <div className="display">
