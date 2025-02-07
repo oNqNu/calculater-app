@@ -1,0 +1,95 @@
+name: Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Create test results directory
+      run: mkdir -p test-results
+
+    - name: Run tests
+      run: npm run test:ci
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: test-results/
+        retention-days: 7
+
+    - name: Comment PR with test results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          try {
+            const testResults = JSON.parse(fs.readFileSync('test-results/results.json', 'utf8'));
+            
+            const formatDuration = (ms) => {
+              if (ms < 1000) return `${ms}ms`;
+              return `${(ms/1000).toFixed(2)}s`;
+            };
+            
+            const summary = `
+            ## テスト結果
+            
+            ### 概要
+            - 総テスト数: ${testResults.numTotalTests}
+            - 成功: ${testResults.numPassedTests} ✅
+            - 失敗: ${testResults.numFailedTests} ${testResults.numFailedTests > 0 ? '❌' : ''}
+            - 実行時間: ${formatDuration(testResults.startTime - testResults.endTime)}
+            
+            ${testResults.numFailedTests > 0 ? `
+            ### 失敗したテスト
+            ${testResults.testResults
+              .filter(suite => suite.status === 'failed')
+              .map(suite => suite.assertionResults
+                .filter(test => test.status === 'failed')
+                .map(test => `- ${test.ancestorTitles.join(' > ')} > ${test.title}\n  ${test.failureMessages.join('\n  ')}`)
+                .join('\n')
+              ).join('\n')}
+            ` : ''}
+            
+            ${testResults.numPassedTests === testResults.numTotalTests ? '### ✨ すべてのテストが成功しました!' : ''}
+            `;
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
+          } catch (error) {
+            console.error('Error processing test results:', error);
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '## ⚠️ テスト結果の処理中にエラーが発生しました\n\n詳細はワークフローのログを確認してください。'
+            });
+          }
