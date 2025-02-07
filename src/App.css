@@ -1,5 +1,32 @@
 @import './styles/tokens.css';
 
+@keyframes gridRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes diagonalMove {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 50px 50px;
+  }
+}
+
+@keyframes lineSlide {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -8,16 +35,105 @@ body {
   align-items: center;
   background: var(--color-background);
   transition: background-color 0.3s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.geometric-grid {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: 
+    linear-gradient(var(--color-primary) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-primary) 1px, transparent 1px);
+  background-size: 15px 15px;
+  opacity: 0.07;
+  animation: gridRotate 40s linear infinite;
+  pointer-events: none;
+}
+
+.geometric-grid::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(var(--color-primary) 2px, transparent 2px),
+    linear-gradient(90deg, var(--color-primary) 2px, transparent 2px);
+  background-size: 45px 45px;
+  opacity: 0.1;
+  animation: gridRotate 30s linear infinite reverse;
+}
+
+.geometric-lines {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.geometric-lines::before,
+.geometric-lines::after {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 1px;
+  background: var(--color-primary);
+  opacity: 0.15;
+}
+
+.geometric-lines::before {
+  top: 30%;
+  animation: lineSlide 3s linear infinite;
+}
+
+.geometric-lines::after {
+  top: 70%;
+  animation: lineSlide 3s linear infinite reverse;
+}
+
+.diagonal-grid {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background-image: 
+    repeating-linear-gradient(45deg, var(--color-primary) 0, var(--color-primary) 1px, transparent 1px, transparent 15px),
+    repeating-linear-gradient(-45deg, var(--color-primary) 0, var(--color-primary) 1px, transparent 1px, transparent 15px);
+  opacity: 0.07;
+  animation: diagonalMove 4s linear infinite;
+  pointer-events: none;
+}
+
+.diagonal-grid::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(45deg, var(--color-primary) 0, var(--color-primary) 2px, transparent 2px, transparent 30px),
+    repeating-linear-gradient(-45deg, var(--color-primary) 0, var(--color-primary) 2px, transparent 2px, transparent 30px);
+  opacity: 0.1;
+  animation: diagonalMove 6s linear infinite reverse;
 }
 
 .calculator {
   width: 320px;
   background: var(--color-surface);
   border-radius: 20px;
-  box-shadow: var(--shadow-calculator);
+  box-shadow: var(--shadow-calculator),
+    0 0 20px rgba(0, 0, 0, 0.2);
   padding: 20px;
   position: relative;
   transition: all 0.3s ease;
+  z-index: 1;
+  backdrop-filter: blur(10px);
 }
 
 .theme-toggle {
@@ -35,6 +151,7 @@ body {
   cursor: pointer;
   box-shadow: var(--shadow-calculator);
   transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
 }
 
 .theme-toggle:hover {
@@ -48,6 +165,7 @@ body {
   margin-bottom: 20px;
   text-align: right;
   transition: background-color 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .equation {
@@ -84,24 +202,29 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 button:hover {
   background: var(--color-button-hover);
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 button:active {
   transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .operator {
   background: var(--color-primary);
   color: var(--color-text-primary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 .operator:hover {
   background: var(--color-primary-hover);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .operator-top {
@@ -126,10 +249,12 @@ button:active {
   background: var(--color-primary);
   color: var(--color-text-primary);
   grid-column: 3 / span 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 .equal:hover {
   background: var(--color-primary-hover);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .zero {
