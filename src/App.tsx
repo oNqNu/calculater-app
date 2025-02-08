@@ -93,12 +93,37 @@ function App() {
   }
 
   const handleOperator = (operator: string) => {
-    if (equation && !shouldResetCurrent) {
-      calculate()
+    const currentValue = getNumericValue(displayNumber)
+    if (equation) {
+      const parts = equation.split(' ')
+      const num1 = parseFloat(parts[0])
+      const prevOperator = parts[1]
+      const num2 = parseFloat(currentValue)
+      let result = 0
+
+      switch (prevOperator) {
+        case '+':
+          result = num1 + num2
+          break
+        case '-':
+          result = num1 - num2
+          break
+        case '×':
+          result = num1 * num2
+          break
+        case '÷':
+          result = num1 / num2
+          break
+      }
+
+      const resultStr = result.toString()
+      setCurrentNumber(resultStr)
+      setDisplayNumber(getEasterEgg(resultStr))
+      setEquation(resultStr + ' ' + operator)
     } else {
-      setEquation(getNumericValue(displayNumber) + ' ' + operator)
-      setShouldResetCurrent(true)
+      setEquation(currentValue + ' ' + operator)
     }
+    setShouldResetCurrent(true)
   }
 
   const calculate = () => {

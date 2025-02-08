@@ -115,6 +115,74 @@ describe('Calculator App', () => {
     })
   })
 
+  describe('複雑な計算パターン', () => {
+    it('連続した加算が正しく実行される(= なしでも計算される)', () => {
+      render(<App />)
+      fireEvent.click(screen.getByRole('button', { name: '1' }))
+      fireEvent.click(screen.getByRole('button', { name: '+' }))
+      fireEvent.click(screen.getByRole('button', { name: '2' }))
+      fireEvent.click(screen.getByRole('button', { name: '+' }))
+      fireEvent.click(screen.getByRole('button', { name: '3' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('3')
+      fireEvent.click(screen.getByRole('button', { name: '=' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('6')
+    })
+
+    it('乗算と加算の組み合わせが正しく実行される', () => {
+      render(<App />)
+      fireEvent.click(screen.getByRole('button', { name: '2' }))
+      fireEvent.click(screen.getByRole('button', { name: '×' }))
+      fireEvent.click(screen.getByRole('button', { name: '3' }))
+      fireEvent.click(screen.getByRole('button', { name: '+' }))
+      fireEvent.click(screen.getByRole('button', { name: '4' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('4')
+      fireEvent.click(screen.getByRole('button', { name: '=' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('10')
+    })
+
+    it('負の数を含む複雑な計算が正しく実行される', () => {
+      render(<App />)
+      fireEvent.click(screen.getByRole('button', { name: '5' }))
+      fireEvent.click(screen.getByRole('button', { name: '±' }))
+      fireEvent.click(screen.getByRole('button', { name: '×' }))
+      fireEvent.click(screen.getByRole('button', { name: '2' }))
+      fireEvent.click(screen.getByRole('button', { name: '+' }))
+      fireEvent.click(screen.getByRole('button', { name: '7' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('7')
+      fireEvent.click(screen.getByRole('button', { name: '=' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('-3')
+    })
+
+    it('小数点を含む複雑な計算が正しく実行される', () => {
+      render(<App />)
+      fireEvent.click(screen.getByRole('button', { name: '1' }))
+      fireEvent.click(screen.getByRole('button', { name: '.' }))
+      fireEvent.click(screen.getByRole('button', { name: '5' }))
+      fireEvent.click(screen.getByRole('button', { name: '×' }))
+      fireEvent.click(screen.getByRole('button', { name: '2' }))
+      fireEvent.click(screen.getByRole('button', { name: '.' }))
+      fireEvent.click(screen.getByRole('button', { name: '5' }))
+      fireEvent.click(screen.getByRole('button', { name: '+' }))
+      fireEvent.click(screen.getByRole('button', { name: '3' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('3')
+      fireEvent.click(screen.getByRole('button', { name: '=' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('6.75')
+    })
+
+    it('除算を含む複雑な計算が正しく実行される', () => {
+      render(<App />)
+      fireEvent.click(screen.getByRole('button', { name: '1' }))
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      fireEvent.click(screen.getByRole('button', { name: '÷' }))
+      fireEvent.click(screen.getByRole('button', { name: '2' }))
+      fireEvent.click(screen.getByRole('button', { name: '×' }))
+      fireEvent.click(screen.getByRole('button', { name: '3' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('3')
+      fireEvent.click(screen.getByRole('button', { name: '=' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('15')
+    })
+  })
+
   describe('状態の永続化', () => {
     it('入力値がlocalStorageに保存される', () => {
       render(<App />)
