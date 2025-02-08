@@ -115,6 +115,73 @@ describe('Calculator App', () => {
     })
   })
 
+  describe('小数点以下の0の表示', () => {
+    it('小数点以下に0が連続する数値が正しく表示される', () => {
+      render(<App />)
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      fireEvent.click(screen.getByRole('button', { name: '.' }))
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('0.0')
+      
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('0.00')
+      
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('0.000')
+      
+      fireEvent.click(screen.getByRole('button', { name: '3' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('0.0003')
+    })
+
+    it('計算結果の末尾の0は表示されない', () => {
+      render(<App />)
+      // 6 * 0.4 = 2.4 のテスト
+      fireEvent.click(screen.getByRole('button', { name: '6' }))
+      fireEvent.click(screen.getByRole('button', { name: '×' }))
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      fireEvent.click(screen.getByRole('button', { name: '.' }))
+      fireEvent.click(screen.getByRole('button', { name: '4' }))
+      fireEvent.click(screen.getByRole('button', { name: '=' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('2.4')
+    })
+
+    it('入力中の小数点以下の0は表示される', () => {
+      render(<App />)
+      // 0.40 を入力するテスト
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      fireEvent.click(screen.getByRole('button', { name: '.' }))
+      fireEvent.click(screen.getByRole('button', { name: '4' }))
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('0.40')
+    })
+
+    it('小数点以下に0が連続する数値の計算が正しく実行される', () => {
+      render(<App />)
+      // 0.00003を入力
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      fireEvent.click(screen.getByRole('button', { name: '.' }))
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      fireEvent.click(screen.getByRole('button', { name: '3' }))
+      
+      fireEvent.click(screen.getByRole('button', { name: '+' }))
+      
+      // もう一度0.00003を入力
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      fireEvent.click(screen.getByRole('button', { name: '.' }))
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      fireEvent.click(screen.getByRole('button', { name: '0' }))
+      fireEvent.click(screen.getByRole('button', { name: '3' }))
+      
+      fireEvent.click(screen.getByRole('button', { name: '=' }))
+      expect(screen.getByTestId('current-value')).toHaveTextContent('0.00006')
+    })
+  })
+
   describe('複雑な計算パターン', () => {
     it('連続した加算が正しく実行される(= なしでも計算される)', () => {
       render(<App />)

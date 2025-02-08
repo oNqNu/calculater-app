@@ -11,20 +11,67 @@ function App() {
   const [shouldResetCurrent, setShouldResetCurrent] = useLocalStorage<boolean>('calc_should_reset', false)
   const [theme, setTheme] = useSystemTheme()
 
-  const formatNumber = (num: string): string => {
+  const getMaxDecimalPlaces = (nums: string[]): number => {
+    // 各数値の小数点以下の桁数を取得し、その最大値を返す
+    const maxPlaces = Math.max(...nums.map(num => {
+      const parts = num.toString().split('.')
+      if (parts.length < 2) return 0
+      
+      // 末尾の0も含めて桁数をカウント
+      const fractionalPart = parts[1]
+      let length = fractionalPart.length
+      
+      // 末尾の0を含む実際の精度を計算
+      while (length > 0 && fractionalPart[length - 1] === '0') {
+        length++
+      }
+      
+      return length
+    }))
+    
+    // 最小でも2桁は保持する(1.5 × 2.5 = 3.75のような計算のため)
+    return Math.max(maxPlaces, 2)
+  }
+
+  const formatNumber = (num: string, maxDecimalPlaces?: number): string => {
+    // 入力が空文字列や無効な数値の場合は'0'を返す
+    if (!num || isNaN(parseFloat(num))) {
+      return '0'
+    }
+
     const number = parseFloat(num)
+    
+    // 整数の場合はそのまま文字列として返す
     if (Number.isInteger(number)) {
       return number.toString()
     }
+
+    // 文字列として処理して精度を保持
+    const numberStr = number.toString()
+    const [integerPart, fractionalPart] = numberStr.split('.')
     
-    const decimalPlaces = (num.split('.')[1] || '').length
+    if (!fractionalPart) {
+      return integerPart
+    }
+
+    // 小数点以下の桁数を決定
+    const targetDecimalPlaces = maxDecimalPlaces !== undefined ?
+      maxDecimalPlaces :
+      fractionalPart.length
+
+    // 小数点以下の桁数を調整
+    let roundedDecimal = fractionalPart.padEnd(targetDecimalPlaces, '0').slice(0, targetDecimalPlaces)
     
-    if (Math.abs(Math.round(number) - number) < Number.EPSILON) {
-      return Math.round(number).toString()
+    // 計算結果の場合は末尾の0を除去
+    if (maxDecimalPlaces !== undefined) {
+      roundedDecimal = roundedDecimal.replace(/0+$/, '')
+      // 小数点以下がすべて0の場合は整数として表示
+      if (!roundedDecimal) {
+        return integerPart
+      }
     }
     
-    const rounded = parseFloat(number.toFixed(Math.min(decimalPlaces, 10)))
-    return rounded.toString()
+    return `${integerPart}.${roundedDecimal}`
   }
 
   const getEasterEgg = (number: string): string => {
@@ -87,7 +134,10 @@ function App() {
       } else {
         const newNumber = currentNumber === '0' && number !== '.' ? number : currentNumber + number
         setCurrentNumber(newNumber)
-        setDisplayNumber(getEasterEgg(newNumber))
+        // イースターエッグ対象の数値かチェック
+        const easterEgg = getEasterEgg(newNumber)
+        // イースターエッグ対象の場合はイースターエッグを表示、それ以外は数値をそのまま表示
+        setDisplayNumber(easterEgg !== formatNumber(newNumber) ? easterEgg : newNumber)
       }
     }
   }
@@ -101,24 +151,29 @@ function App() {
       const num2 = parseFloat(currentValue)
       let result = 0
 
+      // 計算に使用される数値の最大小数点以下桁数を取得
+      const maxDecimalPlaces = getMaxDecimalPlaces([parts[0], currentValue])
+      const precision = Math.pow(10, maxDecimalPlaces)
+
       switch (prevOperator) {
         case '+':
-          result = num1 + num2
+          result = Math.round((num1 + num2) * precision) / precision
           break
         case '-':
-          result = num1 - num2
+          result = Math.round((num1 - num2) * precision) / precision
           break
         case '×':
-          result = num1 * num2
+          result = Math.round((num1 * num2) * precision) / precision
           break
         case '÷':
-          result = num1 / num2
+          result = Math.round((num1 / num2) * precision) / precision
           break
       }
 
-      const resultStr = result.toString()
+      // 計算結果を文字列に変換
+      const resultStr = formatNumber(result.toString(), maxDecimalPlaces)
       setCurrentNumber(resultStr)
-      setDisplayNumber(getEasterEgg(resultStr))
+      setDisplayNumber(resultStr)
       setEquation(resultStr + ' ' + operator)
     } else {
       setEquation(currentValue + ' ' + operator)
@@ -133,24 +188,29 @@ function App() {
     const num2 = parseFloat(getNumericValue(displayNumber))
     let result = 0
 
+    // 計算に使用される数値の最大小数点以下桁数を取得
+    const maxDecimalPlaces = getMaxDecimalPlaces([parts[0], getNumericValue(displayNumber)])
+    const precision = Math.pow(10, maxDecimalPlaces)
+
     switch (operator) {
       case '+':
-        result = num1 + num2
+        result = Math.round((num1 + num2) * precision) / precision
         break
       case '-':
-        result = num1 - num2
+        result = Math.round((num1 - num2) * precision) / precision
         break
       case '×':
-        result = num1 * num2
+        result = Math.round((num1 * num2) * precision) / precision
         break
       case '÷':
-        result = num1 / num2
+        result = Math.round((num1 / num2) * precision) / precision
         break
     }
 
-    const resultStr = result.toString()
+    // 計算結果を文字列に変換
+    const resultStr = formatNumber(result.toString(), maxDecimalPlaces)
     setCurrentNumber(resultStr)
-    setDisplayNumber(getEasterEgg(resultStr))
+    setDisplayNumber(resultStr)
     setEquation('')
     setShouldResetCurrent(true)
   }
