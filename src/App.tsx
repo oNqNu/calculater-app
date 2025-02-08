@@ -136,6 +136,13 @@ function App() {
     }
   }
 
+  const handleToggleSign = () => {
+    const numericValue = parseFloat(currentNumber)
+    const newNumber = (-numericValue).toString()
+    setCurrentNumber(newNumber)
+    setDisplayNumber(getEasterEgg(newNumber))
+  }
+
   const handleClear = () => {
     setCurrentNumber('0')
     setDisplayNumber('0')
@@ -166,7 +173,7 @@ function App() {
         </div>
         <div className="buttons">
           <button className="clear" onClick={handleClear}>C</button>
-          <button onClick={() => handleNumber('.')}>.</button>
+          <button onClick={handleToggleSign}>±</button>
           <button className="operator-top" onClick={() => handleOperator('÷')}>÷</button>
           
           <button onClick={() => handleNumber('7')}>7</button>
@@ -185,6 +192,7 @@ function App() {
           <button className="operator" onClick={() => handleOperator('+')}>+</button>
           
           <button className="zero" onClick={() => handleNumber('0')}>0</button>
+          <button onClick={() => handleNumber('.')}>.</button>
           <button className="equal" onClick={handleEqual}>=</button>
         </div>
       </div>

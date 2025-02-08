@@ -249,7 +249,7 @@ button:active {
 .equal {
   background: var(--color-primary);
   color: var(--color-text-primary);
-  grid-column: 3 / span 2;
+  grid-column: 4;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
