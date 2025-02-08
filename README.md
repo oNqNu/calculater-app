@@ -93,6 +93,12 @@ calculater-app/
 │   ├── App.css        # メインのスタイリング
 │   ├── styles/
 │   │   └── tokens.css # カラートークンの定義
+│   ├── utils/
+│   │   ├── calculator.ts  # 計算ロジックの実装
+│   │   └── easterEggs.ts  # イースターエッグ機能の実装
+│   ├── hooks/
+│   │   ├── useLocalStorage.ts  # ローカルストレージ管理
+│   │   └── useSystemTheme.ts   # テーマ管理
 │   └── main.tsx       # エントリーポイント
 ├── public/            # 静的ファイル
 ├── package.json       # プロジェクト設定と依存関係
