@@ -174,17 +174,17 @@ function App() {
         <div className="buttons">
           <button className="clear" onClick={handleClear}>C</button>
           <button onClick={handleToggleSign}>±</button>
-          <button className="operator-top" onClick={() => handleOperator('÷')}>÷</button>
+          <button className="operator" onClick={() => handleOperator('÷')}>÷</button>
           
           <button onClick={() => handleNumber('7')}>7</button>
           <button onClick={() => handleNumber('8')}>8</button>
           <button onClick={() => handleNumber('9')}>9</button>
-          <button className="operator-top" onClick={() => handleOperator('×')}>×</button>
+          <button className="operator" onClick={() => handleOperator('×')}>×</button>
           
           <button onClick={() => handleNumber('4')}>4</button>
           <button onClick={() => handleNumber('5')}>5</button>
           <button onClick={() => handleNumber('6')}>6</button>
-          <button className="operator-top" onClick={() => handleOperator('-')}>-</button>
+          <button className="operator" onClick={() => handleOperator('-')}>-</button>
           
           <button onClick={() => handleNumber('1')}>1</button>
           <button onClick={() => handleNumber('2')}>2</button>
