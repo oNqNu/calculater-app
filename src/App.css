@@ -239,6 +239,7 @@ button:active {
 .clear {
   background: var(--color-button-background);
   color: var(--color-primary);
+  grid-column: span 2;
 }
 
 .clear:hover {
