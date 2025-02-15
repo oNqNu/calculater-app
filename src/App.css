@@ -138,8 +138,8 @@ body {
 
 .theme-toggle {
   position: absolute;
-  top: min(-50px, -15vw);
-  right: 0;
+  top: -95px;
+  right: 10px;
   width: clamp(32px, 8vw, 40px);
   height: clamp(32px, 8vw, 40px);
   padding: clamp(6px, 2vw, 8px);
